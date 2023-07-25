@@ -1,0 +1,19 @@
+version: "3"
+
+services:
+  backend:
+    restart: "always"
+    build: .
+    environment:
+      IP: 127.0.0.1
+    volumes:
+      - .:/mgahawa
+    command: bash -c "python manage.py runserver 0.0.0.0:8003"
+    container_name: mgahawa
+    image: mgahawa
+    ports:
+      - "8003:8003"
+    networks:
+      - webnet
+networks:
+  webnet:
