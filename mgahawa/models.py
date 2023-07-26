@@ -21,22 +21,16 @@ class MainModel(models.Model):
 
 
 class UserProfile(MainModel):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name="profile")
+    full_name = models.CharField(max_length=200,blank=True, null=True)
+    email = models.EmailField(max_length=200,blank=True, null=True)
+    location = models.CharField(max_length=300,blank=True, null=True)
     phone_number = models.CharField(max_length=12, null=True, blank=True)
     image = models.ImageField(upload_to='images/%Y/%m/%d',null=True, blank=True)
 
     def __str__(self):
 
-        return self.user.email
-    
-    @receiver(post_save, sender=User)
-    def create_user_profile(sender, instance, created, **kwargs):
-        if created:
-            UserProfile.objects.create(user=instance)
+        return self.full_name
 
-    @receiver(post_save, sender=User)
-    def save_user_profile(sender, instance, **kwargs):
-        instance.profile.save()
 
 
 class Restaurant(MainModel):
@@ -52,21 +46,22 @@ class Restaurant(MainModel):
 class Category(MainModel):
     name = models.CharField(max_length=200, null=True, blank=True)
     code = models.CharField(max_length=100, null=True, blank=True)
+    # icon = models.ImageField(upload_to='icons/%Y/%m/%d', height_field=30, width_field=30, max_length=100)
+    
 
     def __str__(self):
 
         return self.code
 
-class FoodItems(MainModel):
+class FoodItem(MainModel):
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, blank=True, null=True)
     name = models.CharField(max_length=200, null=True, blank=True)
-    description = models.CharField(max_length=200, null=True, blank=True)
+    description = models.TextField(blank=True, null=True)
     price = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
     image = models.ImageField(upload_to='images/%Y/%m/%d',null=True, blank=True)
 
     def __str__(self):
-
-        return self.price
+        return self.name
 
 STATUS = (
     (1, 'pending'),
@@ -76,7 +71,7 @@ STATUS = (
 )
 
 class Order(MainModel):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, null=True, blank=True)
     order_number = models.CharField(max_length=10, null=True, blank=True)
     status = models.IntegerField(choices=STATUS, null=True, blank=True)
 
@@ -87,7 +82,7 @@ class Order(MainModel):
 
 class OrderItem(MainModel):
     order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True, blank=True)
-    item = models.ForeignKey(FoodItems, on_delete=models.CASCADE, blank=True, null=True)
+    item = models.ForeignKey(FoodItem, on_delete=models.CASCADE, blank=True, null=True)
     quantity = models.CharField(max_length=200, blank=True, null=True)
 
     def __str__(self):

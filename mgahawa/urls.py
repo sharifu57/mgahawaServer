@@ -7,5 +7,7 @@ from .views import *
 router = DefaultRouter()
 router.register(r'users', UserViewSet, basename='user')
 router.register(r'create_user', RegisterUserViewSet, basename='create_user')
+router.register(r'categories', CategorViewSet)
+router.register(r'fooditems', FoodItemViewSet)
 
 urlpatterns = router.urls

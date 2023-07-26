@@ -16,11 +16,6 @@ from rest_framework.viewsets import GenericViewSet
 #     serializer = UserSerializer(users, many=True)
 #     return Response({{'data': serializer.data}})
 
-class UserViewSet(viewsets.ViewSet):
-    def list(self, request):
-        queryset = User.objects.all()
-        serializer = UserSerializer(queryset, many=True)
-        return Response(serializer.data)
 
 
 class RegisterUserViewSet(CreateModelMixin, GenericViewSet):
@@ -31,21 +26,20 @@ class RegisterUserViewSet(CreateModelMixin, GenericViewSet):
         serializer.is_valid(raise_exception=True)
         
         email = request.data.get('email')
-        username = request.data.get('username')
-        first_name = request.data.get('first_name')
-        last_name = request.data.get('last_name')
-        password = request.data.get('password')
+        full_name = request.data.get('full_name')
+        phone_number = request.data.get('phone_number')
+        location = request.data.get('location')
         
-        if not email or not password or not username:
+        if not email or not full_name:
             return Response(
                 {
                     'status': status.HTTP_400_BAD_REQUEST,
-                    'message': 'Email, Username, or Password is required'
+                    'message': 'Your Details are required'
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        if User.objects.filter(email=email).exists():
+        if UserProfile.objects.filter(email=email).exists():
             return Response(
                 {
                     'status': status.HTTP_409_CONFLICT,
@@ -54,7 +48,7 @@ class RegisterUserViewSet(CreateModelMixin, GenericViewSet):
                 status=status.HTTP_409_CONFLICT
             )
             
-        if User.objects.filter(username=username).exists():
+        if UserProfile.objects.filter(full_name=full_name).exists():
             return Response(
                 {
                     'status': status.HTTP_409_CONFLICT,
@@ -64,9 +58,10 @@ class RegisterUserViewSet(CreateModelMixin, GenericViewSet):
             )
         
         try:
-            user = User.objects.create_user(username=username, email=email, password=password)
-            user.first_name = first_name
-            user.last_name = last_name
+            user = UserProfile.objects.create_user(email=email)
+            user.full_name = full_name
+            user.phone_number = phone_number
+            user.location = location
             user.save()
         
         except Exception as e:
@@ -85,3 +80,19 @@ class RegisterUserViewSet(CreateModelMixin, GenericViewSet):
             },
             status=status.HTTP_201_CREATED
         )
+
+class UserViewSet(viewsets.ViewSet):
+    def list(self, request):
+        queryset = User.objects.all()
+        serializer = UserSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+
+class CategorViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Category.objects.filter(is_active=True, is_deleted=False)
+    serializer_class = CategorySerializer
+
+class FoodItemViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = FoodItem.objects.filter(is_active=True, is_deleted=False)
+    serializer_class = FoodItemSerializer
+    
