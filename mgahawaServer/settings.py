@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admindocs',
+    'django_extensions',
     'mgahawa',
     'rest_framework',
     'drf_yasg'
@@ -143,6 +144,11 @@ STATICFILES_DIRS = [
 
 
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'static')
+
+if DEBUG:
+    MEDIA_ROOT = os.path.join(os.path.dirname(__file__), '..','mgahawa/static').replace('\\', '/')
+else:
+    MEDIA_ROOT = os.path.join(os.path.dirname(__file__), 'static').replace('\\', '/')
 
 if DEBUG:
     MEDIA_ROOT = os.path.join(os.path.dirname(__file__), '..','mgahawa/static').replace('\\', '/')

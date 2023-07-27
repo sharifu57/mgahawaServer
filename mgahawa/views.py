@@ -96,3 +96,14 @@ class FoodItemViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = FoodItem.objects.filter(is_active=True, is_deleted=False)
     serializer_class = FoodItemSerializer
     
+class FoodItemCreateViewSet(viewsets.ViewSet):
+    def get_queryset(self):
+        return super().get_queryset()
+
+    def create(self, request):
+        serializer = FoodItemSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+    
