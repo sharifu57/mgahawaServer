@@ -8,6 +8,7 @@ from .serializer import *
 from rest_framework import viewsets
 from rest_framework.mixins import CreateModelMixin
 from rest_framework.viewsets import GenericViewSet
+import random
 
 
 # Create your views here.
@@ -16,6 +17,9 @@ from rest_framework.viewsets import GenericViewSet
 #     serializer = UserSerializer(users, many=True)
 #     return Response({{'data': serializer.data}})
 
+
+def generate_unique_numbers():
+    return random.randint(100000, 999999)
 
 
 class RegisterUserViewSet(CreateModelMixin, GenericViewSet):
@@ -39,31 +43,38 @@ class RegisterUserViewSet(CreateModelMixin, GenericViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        if UserProfile.objects.filter(email=email).exists():
-            return Response(
-                {
-                    'status': status.HTTP_409_CONFLICT,
-                    'message': 'Email Already Exists'
-                },
-                status=status.HTTP_409_CONFLICT
-            )
+        # if UserProfile.objects.filter(email=email).exists():
+        #     return Response(
+        #         {
+        #             'status': status.HTTP_409_CONFLICT,
+        #             'message': 'Email Already Exists'
+        #         },
+        #         status=status.HTTP_409_CONFLICT
+        #     )
             
-        if UserProfile.objects.filter(full_name=full_name).exists():
-            return Response(
-                {
-                    'status': status.HTTP_409_CONFLICT,
-                    'message': "Username Already Exists"
-                },
-                status=status.HTTP_409_CONFLICT
-            )
+        # if UserProfile.objects.filter(full_name=full_name).exists():
+        #     return Response(
+        #         {
+        #             'status': status.HTTP_409_CONFLICT,
+        #             'message': "Username Already Exists"
+        #         },
+        #         status=status.HTTP_409_CONFLICT
+        #     )
         
         try:
-            user = UserProfile.objects.create_user(email=email)
-            user.full_name = full_name
-            user.phone_number = phone_number
-            user.location = location
-            user.save()
-        
+            # Generate OTP
+            gen_otp = generate_unique_numbers()
+            print("____get otp")
+            print(otp)
+            # Create and save user with OTP
+            user = UserProfile.objects.create(
+                email=email,
+                full_name=full_name,
+                phone=phone_number,
+                location=location,
+                otp=gen_otp
+            )
+
         except Exception as e:
             return Response(
                 {
@@ -76,9 +87,9 @@ class RegisterUserViewSet(CreateModelMixin, GenericViewSet):
         return Response(
             {
                 'status': status.HTTP_201_CREATED,
-                'message': "User created successfully"
+                'message': "User created successfully",
+                'data': serializer.data
             },
-            status=status.HTTP_201_CREATED
         )
 
 class UserViewSet(viewsets.ViewSet):

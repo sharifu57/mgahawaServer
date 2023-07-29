@@ -24,7 +24,8 @@ class UserProfile(MainModel):
     full_name = models.CharField(max_length=200,blank=True, null=True)
     email = models.EmailField(max_length=200,blank=True, null=True)
     location = models.CharField(max_length=300,blank=True, null=True)
-    phone_number = models.CharField(max_length=12, null=True, blank=True)
+    phone = models.CharField(max_length=12, null=True, blank=True)
+    otp = models.CharField(max_length=6,blank=True, null=True)
     image = models.ImageField(upload_to='images/%Y/%m/%d',null=True, blank=True)
 
     def __str__(self):
