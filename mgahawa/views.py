@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from django.http import Http404
 from rest_framework import status
 from .serializer import *
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions
 from rest_framework.mixins import CreateModelMixin
 from rest_framework.viewsets import GenericViewSet
 import random
@@ -102,6 +102,7 @@ class UserViewSet(viewsets.ViewSet):
 class CategorViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Category.objects.filter(is_active=True, is_deleted=False)
     serializer_class = CategorySerializer
+    permission_classes = [permissions.AllowAny]
 
 class FoodItemViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = FoodItem.objects.filter(is_active=True, is_deleted=False)

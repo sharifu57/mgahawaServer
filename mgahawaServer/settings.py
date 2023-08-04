@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-pzmg-2@!4605p9o7c2gg8@i_yj&#^nq0g*bd^e2&w!&rpw46@@
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-HOST_IP = '192.168.2.6'
+HOST_IP = '10.1.30.110'
 HOST_ADDR = f"http://{HOST_IP}:8003"
 
 
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.admindocs',
     'django_extensions',
+    'corsheaders',
     'mgahawa',
     'rest_framework',
     'drf_yasg'
@@ -55,11 +56,15 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
-# REST_FRAMEWORK = {
-#     'DEFAULT_SCHEMA_CLASS': 'django_rest_coreapi_schema.schema.CoreAPIAutoSchema',
-# }
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOWED_ORIGINS = [
+    f"http://{HOST_IP}:8003",
+]
 
 
 ROOT_URLCONF = 'mgahawaServer.urls'

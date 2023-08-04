@@ -47,18 +47,20 @@ class Restaurant(MainModel):
 class Category(MainModel):
     name = models.CharField(max_length=200, null=True, blank=True)
     code = models.CharField(max_length=100, null=True, blank=True)
-    # icon = models.ImageField(upload_to='icons/%Y/%m/%d', height_field=30, width_field=30, max_length=100)
+    icon = models.ImageField(upload_to='icons/%Y/%m/%d', height_field=30, width_field=30, max_length=100)
     
 
     def __str__(self):
 
-        return self.code
+        return self.name
 
 class FoodItem(MainModel):
+    order = models.ForeignKey('mgahawa.Order', related_name='items', on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, blank=True, null=True)
     name = models.CharField(max_length=200, null=True, blank=True)
     description = models.TextField(blank=True, null=True)
     price = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
+    quantity = models.IntegerField(blank=True, null=True)
     image = models.ImageField(upload_to='images/%Y/%m/%d',null=True, blank=True)
 
     def __str__(self):
