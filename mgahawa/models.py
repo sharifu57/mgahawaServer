@@ -60,7 +60,7 @@ class Product(MainModel):
     name = models.CharField(max_length=200, null=True, blank=True)
     description = models.TextField(blank=True, null=True)
     price = models.DecimalField(max_digits=20, decimal_places=2, blank=True, null=True)
-    quantity = models.IntegerField(blank=True, null=True)
+    quantity = models.IntegerField(blank=True, null=True, default=1)
     image = models.ImageField(upload_to='images/%Y/%m/%d',null=True, blank=True)
 
     def __str__(self):
