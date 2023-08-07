@@ -14,7 +14,13 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class FoodItemSerializer(serializers.ModelSerializer):
+class CreateCategorySerializer(serializers.ModelSerializer):
     class Meta:
-        model = FoodItem
+        model = Category
+        fields = ['name', 'code']
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
         fields = '__all__'

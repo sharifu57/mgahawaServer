@@ -54,8 +54,8 @@ class Category(MainModel):
 
         return self.name
 
-class FoodItem(MainModel):
-    order = models.ForeignKey('mgahawa.Order', related_name='items', on_delete=models.CASCADE)
+class Product(MainModel):
+    order = models.ForeignKey('mgahawa.Order', related_name='items', on_delete=models.CASCADE,blank=True, null=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, blank=True, null=True)
     name = models.CharField(max_length=200, null=True, blank=True)
     description = models.TextField(blank=True, null=True)
@@ -85,7 +85,7 @@ class Order(MainModel):
 
 class OrderItem(MainModel):
     order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True, blank=True)
-    item = models.ForeignKey(FoodItem, on_delete=models.CASCADE, blank=True, null=True)
+    item = models.ForeignKey(Product, on_delete=models.CASCADE, blank=True, null=True)
     quantity = models.CharField(max_length=200, blank=True, null=True)
 
     def __str__(self):

@@ -8,7 +8,8 @@ router = DefaultRouter()
 router.register(r'users', UserViewSet, basename='user')
 router.register(r'create_user', RegisterUserViewSet, basename='create_user')
 router.register(r'categories', CategorViewSet)
-router.register(r'fooditems', FoodItemViewSet)
-router.register(r'crate_food_item', FoodItemCreateViewSet, basename='create_food_item')
+router.register(r'products', ProductViewSet)
+router.register(r'create_product', ProductCreateViewSet, basename='create_food_item')
+router.register(r'create_category', CategoryCreateViewSet, basename='create_category')
 
 urlpatterns = router.urls

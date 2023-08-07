@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-pzmg-2@!4605p9o7c2gg8@i_yj&#^nq0g*bd^e2&w!&rpw46@@
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-HOST_IP = '10.1.30.110'
+HOST_IP = '10.1.30.150'
 HOST_ADDR = f"http://{HOST_IP}:8003"
 
 

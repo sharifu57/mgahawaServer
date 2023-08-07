@@ -104,16 +104,40 @@ class CategorViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = CategorySerializer
     permission_classes = [permissions.AllowAny]
 
-class FoodItemViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = FoodItem.objects.filter(is_active=True, is_deleted=False)
-    serializer_class = FoodItemSerializer
-    
-class FoodItemCreateViewSet(viewsets.ViewSet):
+class CategoryCreateViewSet(viewsets.ViewSet):
     def get_queryset(self):
         return super().get_queryset()
 
     def create(self, request):
-        serializer = FoodItemSerializer(data=request.data)
+        serializer = CreateCategorySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ProductViewSet(viewsets.ViewSet):
+    serializer_class = ProductSerializer
+    queryset = Category.objects.filter(is_active=True, is_deleted=False)
+    
+    def retrieve(self, request, pk=None):
+        try:
+            # category = Category.objects.get(id=pk, is_active=True, is_deleted=False)
+            category = self.queryset.get(pk=pk)
+        except Category.DoesNotExist:
+            return Response({"Error": "Category Does Not Exist"}, status=status.HTTP_404_NOT_FOUND)
+
+        products = Product.objects.filter(category=category, is_active=True, is_deleted=False)
+        serializer = ProductSerializer(products, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    
+class ProductCreateViewSet(viewsets.ViewSet):
+    def get_queryset(self):
+        return super().get_queryset()
+
+    def create(self, request):
+        serializer = ProductSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
